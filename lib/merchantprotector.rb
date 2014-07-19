@@ -65,6 +65,7 @@ module Merchantprotector
         browser_ip: request_data.remote_ip,
         referer: request_data.referer,
         user_agent: request_data.user_agent,
+        email: request_data.request_parameters.try(:stripeEmail),
         api_token: configuration.api_token,
         timestamp: Time.now.to_i,
         environment: configuration.environment,
@@ -75,7 +76,6 @@ module Merchantprotector
           version: VERSION
         }
       }
-
       if defined?(SecureRandom) and SecureRandom.respond_to?(:uuid)
         data[:uuid] = SecureRandom.uuid
       end
