@@ -65,7 +65,6 @@ module Merchantprotector
         browser_ip: request_data.remote_ip,
         referer: request_data.referer,
         user_agent: request_data.user_agent,
-        email: request_data.request_parameters.try(:stripeEmail),
         api_token: configuration.api_token,
         timestamp: Time.now.to_i,
         environment: configuration.environment,
@@ -79,6 +78,10 @@ module Merchantprotector
       if defined?(SecureRandom) and SecureRandom.respond_to?(:uuid)
         data[:uuid] = SecureRandom.uuid
       end
+      if request_data.request_parameters.present?
+        email: request_data.request_parameters[:stripeEmail]
+      end
+
        
       uri = URI.parse(configuration.endpoint)
       http = Net::HTTP.new(uri.host, uri.port)
