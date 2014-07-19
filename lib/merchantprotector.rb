@@ -79,7 +79,7 @@ module Merchantprotector
         data[:uuid] = SecureRandom.uuid
       end
       if request_data.request_parameters.present?
-        email: request_data.request_parameters[:stripeEmail]
+        data[:email] = request_data.request_parameters[:stripeEmail]
       end
 
        
