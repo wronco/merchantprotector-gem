@@ -25,47 +25,27 @@ Or install it yourself as:
 $ gem install merchantprotector
 ```
 
-Then, run the following command from your rails root:
+### Then configure the gem
 
+
+Create the file ```config/initializers/merchantprotector.rb``` to hold the configuration values (currently just your access token).
+
+If you want your Merchant Protector API key outside of your repo (recommended!) use an environment variable:
 ```bash
-$ rails generate merchantprotector API_TOKEN
+Merchantprotector.configure do |config|
+  config.api_token = ENV['MERCHANTPROTECTOR_API_TOKEN']
+end
 ```
 
-<!-- RemoveNextIfProject -->
-Be sure to replace ```API_TOKEN``` with your project's ```api_token``` access token, which you can find on your merchantprotector.net seetings page.
-
-
-That will create the file ```config/initializers/merchantprotector.rb```, which holds the configuration values (currently just your access token).
-
-If you want to store your access token outside of your repo, run the same command without arguments:
+For Heroku users, set the environment variable using the heroku CLI
 
 ```bash
-$ rails generate merchantprotector
-```
-
-Then, create an environment variable ```MERCHANTPROTECTOR_API_TOKEN``` and set it to your server-side access token.
-
-```bash
-$ export MERCHANTPROTECTOR_API_TOKEN=API_TOKEN
-```
-
-### For Heroku users
-
-```bash
-$ heroku config:add MERCHANTPROTECTOR_API_TOKEN=API_TOKEN
+$ heroku config:add MERCHANTPROTECTOR_API_TOKEN=YOUR_API_TOKEN
 ```
 
 That's all you need to use Merchant Protector with Rails and Stripe.
 
-## Test your installation
 
-To confirm that it worked, run:
-
-```bash
-$ rake merchantprotector:test
-```
-
-This will submit a test order to Merchant Protector. If it works, you'll see a notice in the console and a test order will appear in your dashboard.
 
 
 
