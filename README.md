@@ -28,16 +28,15 @@ $ gem install merchantprotector
 ### Then configure the gem
 
 
-Create the file ```config/initializers/merchantprotector.rb``` to hold the configuration values (currently just your access token).
+Create the file ```config/initializers/merchantprotector.rb``` to hold the configuration values (currently just your access token).  If you want your Merchant Protector API key outside of your repo (recommended!) use an environment variable:
 
-If you want your Merchant Protector API key outside of your repo (recommended!) use an environment variable:
 ```bash
 Merchantprotector.configure do |config|
   config.api_token = ENV['MERCHANTPROTECTOR_API_TOKEN']
 end
 ```
 
-For Heroku users, set the environment variable using the heroku CLI
+Heroku users can set the environment variable using the heroku CLI
 
 ```bash
 $ heroku config:add MERCHANTPROTECTOR_API_TOKEN=YOUR_API_TOKEN
@@ -46,8 +45,39 @@ $ heroku config:add MERCHANTPROTECTOR_API_TOKEN=YOUR_API_TOKEN
 That's all you need to use Merchant Protector with Rails and Stripe.
 
 
+### Finally, use the gem to report your orders
 
+Add this line to the controller method that creates a charge with Stripe
+```ruby
+Merchantprotector.report_transaction($STRIPE_CHARGE_ID, request)
+```
+Here it is in a sample controller:
+```ruby
+class ChargesController < ApplicationController
+  require 'pp'
+  def index
+    @charges = Charge.order('created_at DESC').limit(25)
+  end 
 
+  def new
+    @charge = Charge.new
+  end
+
+  def create
+      stripe_charge = Stripe::Charge.create(
+        :amount => 2000,
+        :currency => "usd",
+        :card => params[:stripeToken],
+        :description => params[:stripeEmail]
+      )
+
+      Merchantprotector.report_transaction(stripe_charge.id, request)
+
+      redirect_to charges_path, notice: 'Thank You'
+
+  end
+end
+```
 
 ## Help / Support
 
