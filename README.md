@@ -79,6 +79,16 @@ class ChargesController < ApplicationController
 end
 ```
 
+You can override some attritubes of the request object by passing a hash as the 3rd parameter of the report_transation method:
+```
+options = {
+  browser_ip: "127.0.0.1", 
+  referer: "some_custom_referrer", 
+  email: "customer@example.com"
+}
+Merchantprotector.report_transaction(stripe_charge.id, request, options)
+```
+
 ## Help / Support
 
 If you run into any issues, please email us at [will@merchantprotector.net](mailto:will@merchantprotector.net)

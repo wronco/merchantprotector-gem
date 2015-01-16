@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    merchantprotector (0.0.2)
+    merchantprotector (0.0.7)
       multi_json (~> 1.10)
 
 GEM
@@ -149,6 +149,6 @@ DEPENDENCIES
   pry-nav
   pry-remote
   rails (~> 3.2)
-  rspec
+  rspec (~> 2.14)
   rspec-nc
   webmock

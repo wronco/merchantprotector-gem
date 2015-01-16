@@ -8,10 +8,11 @@ describe Merchantprotector do
       Merchantprotector.configure do |config|
         config.logger = logger_mock
       end
-      @request_data = double("ActionDispatch::Request",
+      @request_data = double(ActionDispatch::Request,
+        request_parameters: {},
         remote_ip: "127.1.1.1",
         referer: "http://example.com/page",
-        user_agent: "Chrome v8"
+        user_agent: "Chrome v8" 
       )
       stub_request(:post, Merchantprotector.configuration.endpoint)
     end
@@ -36,6 +37,12 @@ describe Merchantprotector do
       stripe_transaction_id = "st_12321213"
       Merchantprotector.report_transaction(stripe_transaction_id, @request_data)
       WebMock.should have_requested(:post, Merchantprotector.configuration.endpoint).with(:data => { :stripe_token => stripe_transaction_id })
+    end
+
+    it 'should send the overridden IP address if provided' do
+      override_ip = "2.3.4.5"
+      Merchantprotector.report_transaction('st_12345', @request_data, { browser_ip: override_ip })
+      WebMock.should have_requested(:post, Merchantprotector.configuration.endpoint).with(:data => { :browser_ip => override_ip })
     end
 
     it 'should return true when the request is successful' do

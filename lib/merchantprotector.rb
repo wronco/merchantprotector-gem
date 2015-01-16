@@ -59,17 +59,17 @@ module Merchantprotector
     #
     # @param stripe_token [String] The exception object to report
     # @param request_data [Object] Data describing the request. In a rails controller, just pass the `request` object.
-    def report_transaction(stripe_token, request_data)
+    def report_transaction(stripe_token, request_data, options = {})
       data = {
         stripe_token: stripe_token,
-        browser_ip: request_data.remote_ip,
-        referer: request_data.referer,
+        browser_ip: options[:browser_ip] || request_data.remote_ip,
+        referer: options[:referer] || request_data.referer,
         user_agent: request_data.user_agent,
         api_token: configuration.api_token,
         timestamp: Time.now.to_i,
         environment: configuration.environment,
         language: 'ruby',
-        host: Socket.gethostname,
+        host: options[:host] || Socket.gethostname,
         notifier: {
           name: 'merchantprotector-gem',
           version: VERSION
@@ -78,8 +78,8 @@ module Merchantprotector
       if defined?(SecureRandom) and SecureRandom.respond_to?(:uuid)
         data[:uuid] = SecureRandom.uuid
       end
-      if request_data.request_parameters.present?
-        data[:email] = request_data.request_parameters[:stripeEmail]
+      if request_data.request_parameters.present? || options[:email].present?
+        data[:email] = options[:email] || request_data.request_parameters[:stripeEmail]
       end
 
        
